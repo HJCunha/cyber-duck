@@ -1,3 +1,9 @@
+<div id="error-modal-label" class="alert alert-danger alert-dismissible hidden">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+    <span id="error-message"></span>
+</div>
+
 <div class="row justify-content-center">
     <div class="col-md-12">
         <div class="card">
@@ -48,7 +54,7 @@
     <!-- /.modal -->
 @if(!empty($form))
     <!-- Form modal -->
-        <div class="modal fade" id="modal-form">
+        <div class="modal fade" id="modal-form" enctype="multipart/form-data">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -66,6 +72,13 @@
                                     @switch($field["type"])
                                         @case("text")
                                         <input class="form-control" type="text" placeholder="{{$label}}" name="{{$field["column"]}}" id="field_{{$field["column"]}}">
+                                        @break
+                                        @case("image")
+                                            <a href="" target="_blank" id="image_link_{{$field["column"]}}">
+                                                <img src="" id="image_{{$field["column"]}}" width="400px" height="auto" class="image-modal-edit">
+                                            </a>
+                                        @case("file")
+                                        <input class="form-control" type="file" placeholder="{{$label}}" name="{{$field["column"]}}" id="field_{{$field["column"]}}">
                                         @break
                                         @case("select")
                                         <select name="{{$field["column"]}}" id="field_{{$field["column"]}}"
@@ -123,11 +136,17 @@
         }
         $("#modal-form").removeClass("fade").addClass("show");
         $.each(selectedRow, function(index, val) {
-            console.log("HERE: " + index + " -> "+ val);
+            var type = $("#field_" + index, $("#modal-form")).attr("type");
+            if( type !== "file" ) {
+                $("#field_" + index, $("#modal-form")).val(val);
+            }
 
-            $("#field_" + index, $("#modal-form")).val(val);
+            if($("#image_" + index)) {
+                $("#image_" + index).attr("src" ,val);
+                $("#image_link_" + index).attr("href" ,val);
+            }
         });
-        console.log("Selected row", selectedRow );
+        //console.log("Selected row", selectedRow );
     }
 
     var table = null;
@@ -144,6 +163,8 @@
 
                         $('#form_data_insert_row').find("input[type=text], textarea").val("");
                         $('#form_data_insert_row').find("select").val(0);
+                        $('#form_data_insert_row').find("img").attr("src","");
+                        $('#form_data_insert_row').find("a").attr("href","");
 
                         $("#modal-form").removeClass("fade").addClass("show");
                     },
@@ -250,17 +271,26 @@
             $("#modal-form").removeClass("show").addClass("fade");
 
             var dataFromSelect = $(this).data();
-            var formData = $('#form_data_insert_row').serialize();
+            //var formData = $('#form_data_insert_row').serialize();
+            var formData = new FormData($('#form_data_insert_row')[0]);
 
             if($("#form_action").val() === "insert") {
                 $.ajax({
                     type:'POST',
                     url: "{!! route("base_url") !!}/insert-data-" + dataFromSelect.routesuffix + "?suffix=" + dataFromSelect.routesuffix,
                     data: formData,
+                    cache:false,
+                    contentType: false,
+                    processData: false,
                     success:function(data){
-                        console.log("Success on insert", data);
+                        console.log( "Returned data", data);
                         if(!data.error) {
+                            $("#error-modal-label").addClass("hidden");
                             table.draw(false);
+                        } else {
+                            if(data.error) {
+                                showError(data.message);
+                            }
                         }
                     }
                 });
@@ -269,13 +299,21 @@
             if($("#form_action").val() === "update") {
                 var selectedRow = table.row('.selected').data();
                 $.ajax({
-                    type:'PUT',
+                    type:'POST',
                     url: "{!! route("base_url") !!}/update-data-" + dataFromSelect.routesuffix + "/"+ selectedRow.id +"?suffix=" + dataFromSelect.routesuffix,
                     data: formData,
+                    cache:false,
+                    contentType: false,
+                    processData: false,
                     success:function(data){
-                        console.log("Success on insert", data);
+                        console.log( "Returned data", data);
                         if(!data.error) {
+                            $("#error-modal-label").addClass("hidden");
                             table.draw(false);
+                        } else {
+                            if(data.error) {
+                                showError(data.message);
+                            }
                         }
                     }
                 });
@@ -302,5 +340,15 @@
             }
         } );
 
+    }
+
+    function showError(message) {
+        $("#error-modal-label").removeClass("hidden");
+
+        var finalMessage = "";
+        $.each(message, function (index, value) {
+            finalMessage += value.id + ": " + value.message + "<br>";
+        })
+        $("#error-message").html(finalMessage);
     }
 </script>

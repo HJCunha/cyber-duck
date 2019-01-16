@@ -5084,3 +5084,12 @@ table.dataTable tbody > tr > .selected {
   z-index: 1;
 }
 
+.image-modal-edit {
+  max-height: 250px;
+  max-width: 400px;
+  height: auto;
+  width: auto;
+  margin: 15px;
+  display: list-item;
+}
+
