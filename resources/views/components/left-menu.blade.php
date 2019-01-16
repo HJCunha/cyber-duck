@@ -3,7 +3,6 @@
 
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel">
             <div class="pull-left image">
@@ -20,7 +19,6 @@
             <li class="header">Users</li>
             <li id="menu-companies"><a href="/companies"><i class="fa fa-suitcase"></i> <span>Companies</span></a></li>
             <li id="menu-employees"><a href="/employees"><i class="fa fa-users"></i> <span>Employees</span></a></li>
-
         </ul>
         <!-- /.sidebar-menu -->
     </section>

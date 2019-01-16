@@ -8,3 +8,9 @@ Laravel Project for cyber-duck
 - php artisan migrate
 - php artisan db:seed
 - npm install
+
+## Versions
+- NPM: 4.2.0
+- Laravel Framework: 5.7.21  
+- PHP: 7.2.12
+- Composer version 1.6.3
