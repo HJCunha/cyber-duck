@@ -8,6 +8,7 @@ Laravel Project for cyber-duck
 - php artisan migrate
 - php artisan db:seed
 - npm install
+- php artisan storage:link
 
 ## Versions
 - NPM: 4.2.0
@@ -16,6 +17,7 @@ Laravel Project for cyber-duck
 - Composer version 1.6.3
 
 
+## Requested tasks
 
 * Use https://adminlte.io/ as a framework for the application
 * Basic Laravel Auth: ability to log in as administrator
