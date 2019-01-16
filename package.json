@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "admin-lte": "^2.4.8",
-    "cross-env": "^5.2.0"
+    "datatables.net-buttons-dt": "^1.5.4"
   }
 }
