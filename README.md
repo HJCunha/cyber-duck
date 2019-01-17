@@ -2,8 +2,9 @@
 #### Hugo Cunha's Laravel project
 Laravel Project for cyber-duck
 
-- composer dumpautoload
+- cp env.example .env
 - touch storage/duck.sqlite
+- composer install
 - php artisan migrate:install
 - php artisan migrate
 - php artisan db:seed
