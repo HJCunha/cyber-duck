@@ -41,7 +41,7 @@ class CompanyController extends Controller
         }
 
         $company->save();
-        return response()->json($request, 201);
+        return response()->json($company, 201);
     }
 
     public function update(Request $request, Company $company)
