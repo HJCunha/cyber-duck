@@ -3,20 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Company;
+use App\Helpers\Common;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class CompanyController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
     public function index()
     {
         return view("pages/companies/index", ["dtconfig" => Company::$datatableConfig]);
@@ -33,13 +26,40 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
+        $valid = Common::validateForm($request);
+
+        if ($valid !== true) {
+            return $valid;
+        }
+
         $company = Company::create($request->all());
+        if (isset($request['logo'])) {
+            $added = $company->addMediaFromRequest('logo')->toMediaCollection('logos');
+        }
+        if (!empty($added)) {
+            $company->logo = $added->getUrL();
+        }
+
+        $company->save();
         return response()->json($company, 201);
     }
 
     public function update(Request $request, Company $company)
     {
+        $valid = Common::validateForm($request);
+
+        if ($valid !== true) {
+            return $valid;
+        }
         $company->update($request->all());
+        if (isset($request['logo'])) {
+            if ($company->hasMedia("logos")) {
+                $company->updateMedia([], "logos");
+            }
+            $added = $company->addMediaFromRequest('logo')->toMediaCollection('logos');
+            $company->logo = $added->getUrL();
+        }
+        $company->save();
 
         return response()->json($company, 200);
     }

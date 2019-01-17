@@ -16,16 +16,16 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        /* Custom component for datatables */
         Blade::component('components.DTGeneric');
 
-
+        /* Make the route name available on all pages so we can have a user-friendly title */
         view()->composer('*', function ($view) {
             $route = \Request::route();
             $current_route_name = "Page";
             if (!empty($route)) {
                 $current_route_name = \Request::route()->getName();
             }
-
             $view->with('current_route_name', $current_route_name);
         });
     }
