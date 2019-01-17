@@ -102,8 +102,8 @@ class CompanyController extends Controller
                 $company->updateMedia([], "logos");
             }
             $added = $company->addMediaFromRequest('logo')->toMediaCollection('logos');
+            $company->logo = $added->getUrL();
         }
-        $company->logo = $added->getUrL();
         $company->save();
 
         return response()->json($company, 200);
