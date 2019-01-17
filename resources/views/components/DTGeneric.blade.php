@@ -67,6 +67,11 @@
                         <h4 class="modal-title">Add/ Edit row</h4>
                     </div>
                     <div class="modal-body">
+                        <div id="error-form-modal-label" class="alert alert-danger alert-dismissible " style="display: none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+                            <span id="error-form-message"></span>
+                        </div>
                         <form id="form_data_insert_row">
                             <input type="hidden" name="_token" value='{{ csrf_token() }}'>
                             <input type="hidden" name="type_of_action" id="form_action" value="insert">
@@ -222,7 +227,6 @@
         });
 
         $("#modal-form-yes", $("#modal-form")).on("click", function(){
-            $("#modal-form").removeClass("show").addClass("fade");
 
             var dataFromSelect = $(this).data();
             var formData = new FormData($('#form_data_insert_row')[0]);
@@ -237,11 +241,12 @@
                     processData: false,
                     success:function(data){
                         if(!data.error) {
+                            $("#modal-form").removeClass("show").addClass("fade");
                             showSuccess("Row inserted correctly");
                             table.draw(false);
                         } else {
                             if(data.error) {
-                                showError(data.message);
+                                showErrorForm(data.message);
                             }
                         }
                     }
@@ -259,12 +264,13 @@
                     processData: false,
                     success:function(data){
                         if(!data.error) {
+                            $("#modal-form").removeClass("show").addClass("fade");
                             showSuccess("Row updated correctly");
                             $("#error-modal-label").addClass("hidden");
                             table.draw(false);
                         } else {
                             if(data.error) {
-                                showError(data.message);
+                                showErrorForm(data.message);
                             }
                         }
                     }
@@ -361,9 +367,22 @@
 
         var finalMessage = "";
         $.each(message, function (index, value) {
-            finalMessage += value.id + ": " + value.message + "<br>";
+            finalMessage += value.message + "<br>";
         })
         $("#error-message").html(finalMessage);
+    }
+
+    function showErrorForm(message) {
+        $("#error-form-modal-label").fadeIn(1000);
+        setTimeout(function(){
+            $("#error-form-modal-label").fadeOut("slow");
+        }, 3000);
+
+        var finalMessage = "";
+        $.each(message, function (index, value) {
+            finalMessage += value.message + "<br>";
+        })
+        $("#error-form-message").html(finalMessage);
     }
 
     function showSuccess(message) {
