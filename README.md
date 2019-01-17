@@ -2,6 +2,7 @@
 #### Hugo Cunha's Laravel project
 Laravel Project for cyber-duck
 
+## First run
 - cp env.example .env
 - touch storage/duck.sqlite
 - composer install
