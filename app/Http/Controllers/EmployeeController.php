@@ -3,20 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Employee;
+use App\Helpers\Common;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
 class EmployeeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
     public function index()
     {
         return view("pages/employees/index", ["dtconfig" => Employee::$datatableConfig]);
@@ -33,12 +25,22 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+        $valid = Common::validateForm($request);
+
+        if ($valid !== true) {
+            return $valid;
+        }
         $employee = Employee::create($request->all());
         return response()->json($employee, 201);
     }
 
     public function update(Request $request, Employee $employee)
     {
+        $valid = Common::validateForm($request);
+
+        if ($valid !== true) {
+            return $valid;
+        }
         $employee->update($request->all());
 
         return response()->json($employee, 200);
@@ -75,18 +77,8 @@ class EmployeeController extends Controller
      */
     public function getData()
     {
-        //$employees = Employee::with('company')->select("firstName","lastName","email","phone","company_id");
-
         $employees = Employee::join('companies', 'companies.id', '=', 'employees.company_id')
         ->select('employees.*', 'companies.name as companyName');
-
-        /*$employees = Employee::query();
-        foreach ($employees as $employee) {
-            if($employee->company->count() > 0) {
-                $employee->company_id = $employee->company->name;
-
-            }
-        }*/
 
         return Datatables::of($employees)->make(true);
     }
