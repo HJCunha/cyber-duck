@@ -9,7 +9,9 @@ Laravel Project for cyber-duck
 - php artisan migrate
 - php artisan db:seed
 - npm install
+- npm run dev
 - php artisan storage:link
+- php artisan serve --port=8100
 
 ## Versions
 - NPM: 4.2.0
