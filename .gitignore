@@ -24,3 +24,4 @@ php-cs-fixer
 fixer
 rebuild.sh
 storage/duck.sqlite
+.DS_Store
